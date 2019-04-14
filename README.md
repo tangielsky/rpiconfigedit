@@ -1,2 +1,19 @@
 # rpiconfigedit
 Visual editor for the config.txt of a Raspberry Pi
+
+The Raspberry Pi is very easy to install. Insert a SD card, create a image, connect power and everything is running. Everything great? Mostly yes, but if you have to manage special settings, it’s a journey back to the 80s: config files!
+
+This should be a little bit easier with this editor.
+You'll find also some information on hackster and on my blog.
+
+https://www.hackster.io/tangielsky/raspberry-pi-config-editor-1f249d
+https://techpluscode.de/rpiconfigedit-en/
+
+The Lazarus source code is been added soon.
+
+Have fun with it!
+
+_____________________________________________________________________________________
+
+Es gibt auch Informationen in Deutsch auf meinem Blog unter:
+https://techpluscode.de/raspberry-config-editor/
