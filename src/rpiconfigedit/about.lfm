@@ -1,0 +1,72 @@
+object AboutForm: TAboutForm
+  Left = 782
+  Height = 276
+  Top = 551
+  Width = 546
+  BorderStyle = bsDialog
+  Caption = 'Info über...'
+  ClientHeight = 276
+  ClientWidth = 546
+  DesignTimePPI = 120
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  LCLVersion = '2.0.0.4'
+  object Button1: TButton
+    Left = 235
+    Height = 31
+    Top = 215
+    Width = 94
+    Caption = 'Ok'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 20
+    Height = 41
+    Top = 15
+    Width = 92
+    Caption = 'Label1'
+    Font.Height = -30
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 20
+    Height = 20
+    Top = 120
+    Width = 262
+    Caption = '(C)opyright 2019 von Thomas Angielsky'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Cursor = crHandPoint
+    Left = 20
+    Height = 20
+    Top = 165
+    Width = 200
+    Caption = 'techpluscode.de/rpiconfigedit'
+    Font.Style = [fsUnderline]
+    ParentColor = False
+    ParentFont = False
+    OnClick = Label3Click
+  end
+  object LabelVersion: TLabel
+    Left = 20
+    Height = 20
+    Top = 70
+    Width = 61
+    Caption = 'Version X'
+    ParentColor = False
+  end
+  object Image1: TImage
+    Left = 420
+    Height = 113
+    Top = 15
+    Width = 113
+    Center = True
+    Proportional = True
+    Stretch = True
+    Transparent = True
+  end
+end
