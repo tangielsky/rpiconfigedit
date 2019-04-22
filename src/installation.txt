@@ -1,0 +1,9 @@
+Raspberry Pi Config Editor
+
+
+If you want to download and install the source code, you have first to install the package confed.
+It is only usable for the config editor but makes the visual design a little bit easier.
+Just add the package file to your Lazarus installation and recompile Lazarus.
+
+
+Have fun with it!
