@@ -10,10 +10,15 @@ You'll find also some information on hackster and on my blog.
 https://www.hackster.io/tangielsky/raspberry-pi-config-editor-1f249d
 https://techpluscode.de/rpiconfigedit-en/
 
-The Lazarus source code is been added soon.
-
 Have fun with it!
 
+You find the compiled program under:
+/run/windows for Microsoft Windows
+/run/raspbian for the Raspberry Pi Linux
+
+The Lazarus source code was created with Lazarus 2.0.0.
+
+Feel free to send me suggestions for improvements.
 
 
 PS: If you use the Linux version, set the correct permissions: chmod a+x rpiconfigedit
