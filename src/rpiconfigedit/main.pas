@@ -8,13 +8,13 @@ https://techpluscode.de/rpiconfigedit/
 https://techpluscode.de/rpiconfigedit-en/
 
 
-(C) Thomas Angielsky
+(C) 2019 Thomas Angielsky
 
 
 
 The project needs the package ConfEd.
 
-Version 0.85
+Version 1.0
 
 }
 
@@ -27,12 +27,14 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ActnList,
   ExtCtrls, ComCtrls, StdCtrls, ComboEx, Spin, Grids, LCLIntf, Buttons, confed,
-  about, functions, SynEdit, SynHighlighterAny, Translations, language, Types;
+  about, functions, SynEdit, SynHighlighterAny, Translations, language, Types,
+  wifisetup;
 
 
 const
   BOOT_CONFIG_TXT = '/boot/config.txt';
   FILE_LANGUAGE = 'language.conf';
+  FILE_CONFIG = 'rpiconfigedit.conf';
   BACKUP_EXTENSION = '.bak';
   URL_RASPBERRYPIORG = 'https://raspberrypi.org/';
   URL_TECHPLUSCODE = 'https://techpluscode.de/rpiconfigedit';
@@ -46,10 +48,19 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    ActionRaspberryWeb2: TAction;
+    ActionHelp2: TAction;
+    ActionSaveConfig2: TAction;
+    ActionOpenConfig2: TAction;
+    ActionNewConfig2: TAction;
+    ActionListIcon: TActionList;
+    ActionSaveWifi: TAction;
+    ActionSaveSSH: TAction;
+    ActionSetupPage: TAction;
     ActionLanguageEN: TAction;
     ActionLanguageDE: TAction;
     ActionTechPlusCode: TAction;
-    ActionRasperryWeb: TAction;
+    ActionRaspberryWeb: TAction;
     ActionAbout: TAction;
     ActionNewConfig: TAction;
     ActionHelp: TAction;
@@ -58,7 +69,7 @@ type
     ActionSaveConfig: TAction;
     ActionOpenConfig: TAction;
     ActionOpenBootConfig: TAction;
-    ActionList1: TActionList;
+    ActionListMenue: TActionList;
     ConfigPanel1: TConfigPanel;
     ConfigPanel10: TConfigPanel;
     ConfigPanel11: TConfigPanel;
@@ -66,17 +77,31 @@ type
     ConfigPanel13: TConfigPanel;
     ConfigPanel14: TConfigPanel;
     ConfigPanel15: TConfigPanel;
+    ConfigPanel16: TConfigPanel;
+    cpDpiGroup: TConfigPanel;
+    cpDpiMode: TConfigPanel;
+    cpDpiTimings1: TConfigPanel;
+    cpHdmiTimings: TConfigPanel;
+    cpHdmiCvt: TConfigPanel;
     cpDisableCameraLed: TConfigPanel;
     cpDisableL2Cache: TConfigPanel;
+    cpDisableTouchscreen: TConfigPanel;
+    cpEnableDpiLcd: TConfigPanel;
+    cpLcdRotate: TConfigPanel;
     cpDtparamAudio: TConfigPanel;
     cpDtparamI2CARM: TConfigPanel;
     cpDtparamI2S: TConfigPanel;
     cpDtparamSPI: TConfigPanel;
+    cpEdidContextType: TConfigPanel;
     cpGPUMem: TConfigPanel;
     cpGPUMem1024: TConfigPanel;
     cpGPUMem256: TConfigPanel;
     cpGPUMem512: TConfigPanel;
+    cpEdidContentType: TConfigPanel;
+    cpHdmiForceMode: TConfigPanel;
+    cpIgnoreLcd: TConfigPanel;
     cpMaxUsbCurrent: TConfigPanel;
+    cpLcdFramerate: TConfigPanel;
     cpStartX: TConfigPanel;
     cpStartDebug: TConfigPanel;
     cpDisableOverscan: TConfigPanel;
@@ -125,46 +150,73 @@ type
     cpFixupFile: TConfigPanel;
     cpStartFile: TConfigPanel;
     cpUsbBootMode: TConfigPanel;
-    ImageList1: TImageList;
     ImageListIcon: TImageList;
     ImageListMenue: TImageList;
     Label1: TLabel;
     Label10: TLabel;
+    Label11: TLabel;
     Label12: TLabel;
+    Label13: TLabel;
     Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    Label17: TLabel;
+    Label18: TLabel;
     Label2: TLabel;
-    Label28: TLabel;
-    Label29: TLabel;
     Label3: TLabel;
     Label30: TLabel;
     Label34: TLabel;
     Label4: TLabel;
-    Label89: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     LabelBootDelay: TLabel;
-    MainMenu1: TMainMenu;
-    MemoHdmiTimings: TMemo;
     MenuItem1: TMenuItem;
+    MenuItem12: TMenuItem;
+    MenuItem2: TMenuItem;
+    N13: TMenuItem;
+    N12: TMenuItem;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
-    MenuItem12: TMenuItem;
-    MenuItem13: TMenuItem;
-    MenuItem14: TMenuItem;
-    MenuItem15: TMenuItem;
-    N4: TMenuItem;
-    MenuItem2: TMenuItem;
+    N9: TMenuItem;
+    MenuItem16: TMenuItem;
+    MenuItem17: TMenuItem;
+    MenuItem18: TMenuItem;
+    MenuItem19: TMenuItem;
+    MenuItem20: TMenuItem;
+    MenuItem22: TMenuItem;
+    MenuItem23: TMenuItem;
+    MenuItem24: TMenuItem;
+    MenuItem25: TMenuItem;
+    MenuItem26: TMenuItem;
+    MenuItem27: TMenuItem;
+    MenuItem28: TMenuItem;
+    MenuItem29: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
+    MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
+    N4: TMenuItem;
     N3: TMenuItem;
-    N2: TMenuItem;
-    MenuItem7: TMenuItem;
     N1: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
+    N2: TMenuItem;
+    N8: TMenuItem;
+    N7: TMenuItem;
+    N6: TMenuItem;
+    N5: TMenuItem;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    Panel12: TPanel;
+    Panel13: TPanel;
+    Panel14: TPanel;
     Panel15: TPanel;
     Panel16: TPanel;
     Panel17: TPanel;
@@ -186,11 +238,20 @@ type
     Panel31: TPanel;
     Panel32: TPanel;
     Panel33: TPanel;
+    Panel34: TPanel;
+    Panel35: TPanel;
+    Panel36: TPanel;
+    Panel37: TPanel;
+    Panel38: TPanel;
+    Panel39: TPanel;
     Panel4: TPanel;
     Panel5: TPanel;
     Panel6: TPanel;
-    Panel7: TPanel;
-    RadioGroupPi: TRadioGroup;
+    Panel8: TPanel;
+    Panel9: TPanel;
+    PopupMenuHelp: TPopupMenu;
+    PopupMenuFile: TPopupMenu;
+    PopupMenuTotal: TPopupMenu;
     SaveDialog1: TSaveDialog;
     ScrollBox1: TScrollBox;
     ScrollBox10: TScrollBox;
@@ -199,8 +260,11 @@ type
     ScrollBox13: TScrollBox;
     ScrollBox14: TScrollBox;
     ScrollBox15: TScrollBox;
-    ScrollBox16: TScrollBox;
+    ScrollBox17: TScrollBox;
+    ScrollBox18: TScrollBox;
+    ScrollBox19: TScrollBox;
     ScrollBox2: TScrollBox;
+    ScrollBox20: TScrollBox;
     ScrollBox3: TScrollBox;
     ScrollBox4: TScrollBox;
     ScrollBox5: TScrollBox;
@@ -208,22 +272,27 @@ type
     ScrollBox7: TScrollBox;
     ScrollBox8: TScrollBox;
     ScrollBox9: TScrollBox;
+    SelectDirectoryDialog1: TSelectDirectoryDialog;
     SpeedButton1: TSpeedButton;
     SpeedButton10: TSpeedButton;
     SpeedButton11: TSpeedButton;
     SpeedButton12: TSpeedButton;
     SpeedButton13: TSpeedButton;
+    SpeedButton14: TSpeedButton;
+    SpeedButton15: TSpeedButton;
+    SpeedButton16: TSpeedButton;
+    SpeedButton17: TSpeedButton;
     SpeedButton2: TSpeedButton;
     SpeedButton3: TSpeedButton;
     SpeedButton4: TSpeedButton;
-    SpeedButton5: TSpeedButton;
     SpeedButton6: TSpeedButton;
     SpeedButton7: TSpeedButton;
+    SpeedButton8: TSpeedButton;
+    SpeedButton9: TSpeedButton;
     Splitter2: TSplitter;
     StatusBar1: TStatusBar;
     SynAnySyn1: TSynAnySyn;
     SynEdit1: TSynEdit;
-    TabSheet1: TTabSheet;
     TabSheet10: TTabSheet;
     TabSheet11: TTabSheet;
     TabSheet12: TTabSheet;
@@ -234,6 +303,9 @@ type
     TabSheet17: TTabSheet;
     TabSheet18: TTabSheet;
     TabSheet19: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet20: TTabSheet;
+    TabSheet8: TTabSheet;
     TabSheetEditor: TTabSheet;
     TabSheet3: TTabSheet;
     TabSheet4: TTabSheet;
@@ -245,29 +317,45 @@ type
     TreeView1: TTreeView;
     procedure ActionAboutExecute(Sender: TObject);
     procedure ActionCloseExecute(Sender: TObject);
+    procedure ActionHelp2Execute(Sender: TObject);
     procedure ActionHelpExecute(Sender: TObject);
     procedure ActionLanguageDEExecute(Sender: TObject);
     procedure ActionLanguageENExecute(Sender: TObject);
+    procedure ActionNewConfig2Execute(Sender: TObject);
     procedure ActionNewConfigExecute(Sender: TObject);
     procedure ActionOpenBootConfigExecute(Sender: TObject);
+    procedure ActionOpenConfig2Execute(Sender: TObject);
     procedure ActionOpenConfigExecute(Sender: TObject);
-    procedure ActionRasperryWebExecute(Sender: TObject);
+    procedure ActionRaspberryWeb2Execute(Sender: TObject);
+    procedure ActionRaspberryWebExecute(Sender: TObject);
+    procedure ActionSaveConfig2Execute(Sender: TObject);
     procedure ActionSaveConfigAsExecute(Sender: TObject);
     procedure ActionSaveConfigExecute(Sender: TObject);
+    procedure ActionSaveSSHExecute(Sender: TObject);
+    procedure ActionSaveWifiExecute(Sender: TObject);
+    procedure ActionSetupPageExecute(Sender: TObject);
     procedure ActionTechPlusCodeExecute(Sender: TObject);
     procedure cpBootcodeDelayValueChange(Sender: TObject);
     procedure cpBootDelayMsValueChange(Sender: TObject);
     procedure cpBootDelayValueChange(Sender: TObject);
+    procedure cpDpiGroupValueChange(Sender: TObject);
     procedure cpHdmiGroupValueChange(Sender: TObject);
-    procedure cpHdmiModeValueChange(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
+    procedure SpeedButton14Click(Sender: TObject);
+    procedure SpeedButton15Click(Sender: TObject);
+    procedure SpeedButton8Click(Sender: TObject);
+    procedure SpeedButton9Click(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
   private
     Language : string;
     ConfigFilename : string;
     TreeviewChange : boolean;
+    FirstStart : boolean;
 
+    procedure AddModes(cp: TConfigPanel; group : string);
     function IsPropComment(s : string; cp : TConfigPanel) : TPropLine;
     function FileChangedGoOn: boolean;
     procedure LoadConfigTxt(Filename: string);
@@ -279,10 +367,10 @@ type
     procedure UpdateConfigPanelsFromEditor;
     procedure UpdateEditorFromConfigPanels;
     procedure UpdateLabelBootDelay;
-    procedure UpdateLanguage;
     procedure UpdatePageControl(s : string);
     procedure UpdateFilename;
   public
+    procedure UpdateLanguage;
 
   end;
 
@@ -293,7 +381,7 @@ implementation
 
 {$R *.lfm}
 
-
+uses Inifiles, setup;
 
 
 { TMainForm }
@@ -563,7 +651,7 @@ begin
 
   UpdateEditorFromConfigPanels;
 
-  if FileExists(Filename) then
+  if FileExists(Filename) and (ConfigSetup.CreateBackupfiles=true) then
     begin
       //Create Backup-file
       RenameFile(Filename,ChangeFileExt(Filename,BACKUP_EXTENSION));
@@ -619,6 +707,11 @@ begin
   if FileExists(BOOT_CONFIG_TXT) then LoadConfigTxt(BOOT_CONFIG_TXT);
 end;
 
+procedure TMainForm.ActionOpenConfig2Execute(Sender: TObject);
+begin
+  ActionOpenConfigExecute(Sender);
+end;
+
 procedure TMainForm.ActionOpenConfigExecute(Sender: TObject);
 begin
   if FileChangedGoOn=false then exit;
@@ -631,9 +724,19 @@ begin
     end;
 end;
 
-procedure TMainForm.ActionRasperryWebExecute(Sender: TObject);
+procedure TMainForm.ActionRaspberryWeb2Execute(Sender: TObject);
+begin
+  ActionRaspberryWebExecute(Sender);
+end;
+
+procedure TMainForm.ActionRaspberryWebExecute(Sender: TObject);
 begin
   OpenUrl(URL_RASPBERRYPIORG);
+end;
+
+procedure TMainForm.ActionSaveConfig2Execute(Sender: TObject);
+begin
+  ActionSaveConfigExecute(Sender);
 end;
 
 procedure TMainForm.ActionSaveConfigAsExecute(Sender: TObject);
@@ -652,6 +755,30 @@ begin
   if ConfigFilename=Trans.Text('neue_config.txt') then
      ActionSaveConfigAsExecute(Sender)
   else SaveConfigTxt(ConfigFilename);
+end;
+
+procedure TMainForm.ActionSaveSSHExecute(Sender: TObject);
+var sl : TStringList;
+begin
+  SelectDirectoryDialog1.Title:=Trans.Text('DateiSpeichernSSH');
+  if SelectDirectoryDialog1.Execute then
+    begin
+      sl:=TStringList.Create;
+      sl.SaveToFile(SelectDirectoryDialog1.FileName+PathDelim+'ssh');
+      MessageDlg(Trans.Text('SSHgespeichert')+#10#13
+        +SelectDirectoryDialog1.FileName+PathDelim+'ssh',mtInformation,[mbOk],0);
+      sl.Free;
+    end;
+end;
+
+procedure TMainForm.ActionSaveWifiExecute(Sender: TObject);
+begin
+  WifiSetupForm.ShowModal;
+end;
+
+procedure TMainForm.ActionSetupPageExecute(Sender: TObject);
+begin
+  SetupForm.ShowModal;
 end;
 
 procedure TMainForm.ActionTechPlusCodeExecute(Sender: TObject);
@@ -683,15 +810,18 @@ end;
 procedure TMainForm.ActionLanguageDEExecute(Sender: TObject);
 begin
   Trans.Language:='DE';
-  Trans.SaveLanguage;
   UpdateLanguage;
 end;
 
 procedure TMainForm.ActionLanguageENExecute(Sender: TObject);
 begin
   Trans.Language:='EN';
-  Trans.SaveLanguage;
   UpdateLanguage;
+end;
+
+procedure TMainForm.ActionNewConfig2Execute(Sender: TObject);
+begin
+  ActionNewConfigExecute(Sender);
 end;
 
 function TMainForm.FileChangedGoOn : boolean;
@@ -720,6 +850,11 @@ begin
   Close;
 end;
 
+procedure TMainForm.ActionHelp2Execute(Sender: TObject);
+begin
+  ActionHelpExecute(Sender);
+end;
+
 procedure TMainForm.cpBootcodeDelayValueChange(Sender: TObject);
 begin
   cpBootDelay.Enabled:=cpBootcodeDelay.Value='0x200';
@@ -743,166 +878,198 @@ begin
   UpdateLabelBootDelay;
 end;
 
+procedure TMainForm.AddModes(cp : TConfigPanel; group : string);
+begin
+  if group='1' then
+    begin
+      cp.ComboboxAddLine('','');
+      cp.ComboboxAddLine('1','VGA (640x480)');
+      cp.ComboboxAddLine('2','480p - 60Hz ');
+      cp.ComboboxAddLine('3','480p - 60Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('4','720p - 60Hz ');
+      cp.ComboboxAddLine('5','1080i - 60Hz ');
+      cp.ComboboxAddLine('6','480i - 60Hz ');
+      cp.ComboboxAddLine('7','480i - 60Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('8','240p - 60Hz ');
+      cp.ComboboxAddLine('9','240p - 60Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('10','480i - 60Hz pixel quadrupling');
+      cp.ComboboxAddLine('11','480i - 60Hz pixel quadrupling, 16:9 aspect ratio');
+      cp.ComboboxAddLine('12','240p - 60Hz pixel quadrupling');
+      cp.ComboboxAddLine('13','240p - 60Hz pixel quadrupling, 16:9 aspect ratio');
+      cp.ComboboxAddLine('14','480p - 60Hz pixel doubling');
+      cp.ComboboxAddLine('15','480p - 60Hz pixel doubling, 16:9 aspect ratio');
+      cp.ComboboxAddLine('16','1080p - 60Hz ');
+      cp.ComboboxAddLine('17','576p - 50Hz ');
+      cp.ComboboxAddLine('18','576p - 50Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('19','720p - 50Hz ');
+      cp.ComboboxAddLine('20','1080i - 50Hz ');
+      cp.ComboboxAddLine('21','576i - 50Hz ');
+      cp.ComboboxAddLine('22','576i - 50Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('23','288p - 50Hz ');
+      cp.ComboboxAddLine('24','288p - 50Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('25','576i - 50Hz pixel quadrupling');
+      cp.ComboboxAddLine('26','576i - 50Hz pixel quadrupling, 16:9 aspect ratio');
+      cp.ComboboxAddLine('27','288p - 50Hz pixel quadrupling');
+      cp.ComboboxAddLine('28','288p - 50Hz pixel quadrupling, 16:9 aspect ratio');
+      cp.ComboboxAddLine('29','576p - 50Hz pixel doubling');
+      cp.ComboboxAddLine('30','576p - 50Hz pixel doubling, 16:9 aspect ratio');
+      cp.ComboboxAddLine('31','1080p - 50Hz ');
+      cp.ComboboxAddLine('32','1080p - 24Hz ');
+      cp.ComboboxAddLine('33','1080p - 25Hz ');
+      cp.ComboboxAddLine('34','1080p - 30Hz ');
+      cp.ComboboxAddLine('35','480p - 60Hz pixel quadrupling');
+      cp.ComboboxAddLine('36','480p - 60Hz pixel quadrupling, 16:9 aspect ratio');
+      cp.ComboboxAddLine('37','576p - 50Hz pixel quadrupling');
+      cp.ComboboxAddLine('38','576p - 50Hz pixel quadrupling, 16:9 aspect ratio');
+      cp.ComboboxAddLine('39','1080i - 50Hz reduced blanking');
+      cp.ComboboxAddLine('40','1080i - 100Hz ');
+      cp.ComboboxAddLine('41','720p - 100Hz ');
+      cp.ComboboxAddLine('42','576p - 100Hz ');
+      cp.ComboboxAddLine('43','576p - 100Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('44','576i - 100Hz ');
+      cp.ComboboxAddLine('45','576i - 100Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('46','1080i - 120Hz ');
+      cp.ComboboxAddLine('47','720p - 120Hz ');
+      cp.ComboboxAddLine('48','480p - 120Hz ');
+      cp.ComboboxAddLine('49','480p - 120Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('50','480i - 120Hz ');
+      cp.ComboboxAddLine('51','480i - 120Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('52','576p - 200Hz ');
+      cp.ComboboxAddLine('53','576p - 200Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('54','576i - 200Hz ');
+      cp.ComboboxAddLine('55','576i - 200Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('56','480p - 240Hz ');
+      cp.ComboboxAddLine('57','480p - 240Hz 16:9 aspect ratio');
+      cp.ComboboxAddLine('58','480i - 240Hz ');
+      cp.ComboboxAddLine('59','480i - 240Hz 16:9 aspect ratio');
+    end
+  else if group='2' then
+    begin
+      cp.Enabled:=true;
+      cp.ComboboxAddLine('','');
+      cp.ComboboxAddLine('1','640x350 - 85Hz ');
+      cp.ComboboxAddLine('2','640x400 - 85Hz ');
+      cp.ComboboxAddLine('3','720x400 - 85Hz ');
+      cp.ComboboxAddLine('4','640x480 - 60Hz ');
+      cp.ComboboxAddLine('5','640x480 - 72Hz ');
+      cp.ComboboxAddLine('6','640x480 - 75Hz ');
+      cp.ComboboxAddLine('7','640x480 - 85Hz ');
+      cp.ComboboxAddLine('8','800x600 - 56Hz ');
+      cp.ComboboxAddLine('9','800x600 - 60Hz ');
+      cp.ComboboxAddLine('10','800x600 - 72Hz ');
+      cp.ComboboxAddLine('11','800x600 - 75Hz ');
+      cp.ComboboxAddLine('12','800x600 - 85Hz ');
+      cp.ComboboxAddLine('13','800x600 - 120Hz ');
+      cp.ComboboxAddLine('14','848x480 - 60Hz ');
+      cp.ComboboxAddLine('15','1024x768 - 43Hz incompatible with the Raspberry Pi');
+      cp.ComboboxAddLine('16','1024x768 - 60Hz ');
+      cp.ComboboxAddLine('17','1024x768 - 70Hz ');
+      cp.ComboboxAddLine('18','1024x768 - 75Hz ');
+      cp.ComboboxAddLine('19','1024x768 - 85Hz ');
+      cp.ComboboxAddLine('20','1024x768 - 120Hz ');
+      cp.ComboboxAddLine('21','1152x864 - 75Hz ');
+      cp.ComboboxAddLine('22','1280x768 -  reduced blanking');
+      cp.ComboboxAddLine('23','1280x768 - 60Hz ');
+      cp.ComboboxAddLine('24','1280x768 - 75Hz ');
+      cp.ComboboxAddLine('25','1280x768 - 85Hz ');
+      cp.ComboboxAddLine('26','1280x768 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('27','1280x800 -  reduced blanking');
+      cp.ComboboxAddLine('28','1280x800 - 60Hz ');
+      cp.ComboboxAddLine('29','1280x800 - 75Hz ');
+      cp.ComboboxAddLine('30','1280x800 - 85Hz ');
+      cp.ComboboxAddLine('31','1280x800 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('32','1280x960 - 60Hz ');
+      cp.ComboboxAddLine('33','1280x960 - 85Hz ');
+      cp.ComboboxAddLine('34','1280x960 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('35','1280x1024 - 60Hz ');
+      cp.ComboboxAddLine('36','1280x1024 - 75Hz ');
+      cp.ComboboxAddLine('37','1280x1024 - 85Hz ');
+      cp.ComboboxAddLine('38','1280x1024 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('39','1360x768 - 60Hz ');
+      cp.ComboboxAddLine('40','1360x768 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('41','1400x1050 -  reduced blanking');
+      cp.ComboboxAddLine('42','1400x1050 - 60Hz ');
+      cp.ComboboxAddLine('43','1400x1050 - 75Hz ');
+      cp.ComboboxAddLine('44','1400x1050 - 85Hz ');
+      cp.ComboboxAddLine('45','1400x1050 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('46','1440x900 -  reduced blanking');
+      cp.ComboboxAddLine('47','1440x900 - 60Hz ');
+      cp.ComboboxAddLine('48','1440x900 - 75Hz ');
+      cp.ComboboxAddLine('49','1440x900 - 85Hz ');
+      cp.ComboboxAddLine('50','1440x900 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('51','1600x1200 - 60Hz ');
+      cp.ComboboxAddLine('52','1600x1200 - 65Hz ');
+      cp.ComboboxAddLine('53','1600x1200 - 70Hz ');
+      cp.ComboboxAddLine('54','1600x1200 - 75Hz ');
+      cp.ComboboxAddLine('55','1600x1200 - 85Hz ');
+      cp.ComboboxAddLine('56','1600x1200 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('57','1680x1050 -  reduced blanking');
+      cp.ComboboxAddLine('58','1680x1050 - 60Hz ');
+      cp.ComboboxAddLine('59','1680x1050 - 75Hz ');
+      cp.ComboboxAddLine('60','1680x1050 - 85Hz ');
+      cp.ComboboxAddLine('61','1680x1050 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('62','1792x1344 - 60Hz ');
+      cp.ComboboxAddLine('63','1792x1344 - 75Hz ');
+      cp.ComboboxAddLine('64','1792x1344 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('65','1856x1392 - 60Hz ');
+      cp.ComboboxAddLine('66','1856x1392 - 75Hz ');
+      cp.ComboboxAddLine('67','1856x1392 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('68','1920x1200 -  reduced blanking');
+      cp.ComboboxAddLine('69','1920x1200 - 60Hz ');
+      cp.ComboboxAddLine('70','1920x1200 - 75Hz ');
+      cp.ComboboxAddLine('71','1920x1200 - 85Hz ');
+      cp.ComboboxAddLine('72','1920x1200 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('73','1920x1440 - 60Hz ');
+      cp.ComboboxAddLine('74','1920x1440 - 75Hz ');
+      cp.ComboboxAddLine('75','1920x1440 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('76','2560x1600 -  reduced blanking');
+      cp.ComboboxAddLine('77','2560x1600 - 60Hz ');
+      cp.ComboboxAddLine('78','2560x1600 - 75Hz ');
+      cp.ComboboxAddLine('79','2560x1600 - 85Hz ');
+      cp.ComboboxAddLine('80','2560x1600 - 120Hz reduced blanking');
+      cp.ComboboxAddLine('81','1366x768 - 60Hz ');
+      cp.ComboboxAddLine('82','1920x1080 - 60Hz 1080p');
+      cp.ComboboxAddLine('83','1600x900 -  reduced blanking');
+      cp.ComboboxAddLine('84','2048x1152 -  reduced blanking');
+      cp.ComboboxAddLine('85','1280x720 - 60Hz 720p');
+      cp.ComboboxAddLine('86','1366x768 -  reduced blanking');
+      cp.ComboboxAddLine('87','timings');
+    end
+
+end;
+
+procedure TMainForm.cpDpiGroupValueChange(Sender: TObject);
+begin
+  cpDpiMode.ComboboxClear;
+  if cpDpiGroup.Value='1' then
+    begin
+      cpDpiMode.Enabled:=true;
+      AddModes(cpDpiMode,cpDpiGroup.Value);
+    end
+  else if cpDpiGroup.Value='2' then
+    begin
+      cpDpiMode.Enabled:=true;
+      AddModes(cpDpiMode,cpDpiGroup.Value);
+    end
+  else
+    begin
+      //
+    end;
+
+end;
+
 procedure TMainForm.cpHdmiGroupValueChange(Sender: TObject);
 begin
   cpHdmiMode.ComboboxClear;
   if cpHdmiGroup.Value='1' then
     begin
       cpHdmiMode.Enabled:=true;
-      cpHdmiMode.ComboboxAddLine('','');
-      cpHdmiMode.ComboboxAddLine('1','VGA (640x480)');
-      cpHdmiMode.ComboboxAddLine('2','480p - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('3','480p - 60Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('4','720p - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('5','1080i - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('6','480i - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('7','480i - 60Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('8','240p - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('9','240p - 60Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('10','480i - 60Hz pixel quadrupling');
-      cpHdmiMode.ComboboxAddLine('11','480i - 60Hz pixel quadrupling, 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('12','240p - 60Hz pixel quadrupling');
-      cpHdmiMode.ComboboxAddLine('13','240p - 60Hz pixel quadrupling, 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('14','480p - 60Hz pixel doubling');
-      cpHdmiMode.ComboboxAddLine('15','480p - 60Hz pixel doubling, 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('16','1080p - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('17','576p - 50Hz ');
-      cpHdmiMode.ComboboxAddLine('18','576p - 50Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('19','720p - 50Hz ');
-      cpHdmiMode.ComboboxAddLine('20','1080i - 50Hz ');
-      cpHdmiMode.ComboboxAddLine('21','576i - 50Hz ');
-      cpHdmiMode.ComboboxAddLine('22','576i - 50Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('23','288p - 50Hz ');
-      cpHdmiMode.ComboboxAddLine('24','288p - 50Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('25','576i - 50Hz pixel quadrupling');
-      cpHdmiMode.ComboboxAddLine('26','576i - 50Hz pixel quadrupling, 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('27','288p - 50Hz pixel quadrupling');
-      cpHdmiMode.ComboboxAddLine('28','288p - 50Hz pixel quadrupling, 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('29','576p - 50Hz pixel doubling');
-      cpHdmiMode.ComboboxAddLine('30','576p - 50Hz pixel doubling, 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('31','1080p - 50Hz ');
-      cpHdmiMode.ComboboxAddLine('32','1080p - 24Hz ');
-      cpHdmiMode.ComboboxAddLine('33','1080p - 25Hz ');
-      cpHdmiMode.ComboboxAddLine('34','1080p - 30Hz ');
-      cpHdmiMode.ComboboxAddLine('35','480p - 60Hz pixel quadrupling');
-      cpHdmiMode.ComboboxAddLine('36','480p - 60Hz pixel quadrupling, 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('37','576p - 50Hz pixel quadrupling');
-      cpHdmiMode.ComboboxAddLine('38','576p - 50Hz pixel quadrupling, 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('39','1080i - 50Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('40','1080i - 100Hz ');
-      cpHdmiMode.ComboboxAddLine('41','720p - 100Hz ');
-      cpHdmiMode.ComboboxAddLine('42','576p - 100Hz ');
-      cpHdmiMode.ComboboxAddLine('43','576p - 100Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('44','576i - 100Hz ');
-      cpHdmiMode.ComboboxAddLine('45','576i - 100Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('46','1080i - 120Hz ');
-      cpHdmiMode.ComboboxAddLine('47','720p - 120Hz ');
-      cpHdmiMode.ComboboxAddLine('48','480p - 120Hz ');
-      cpHdmiMode.ComboboxAddLine('49','480p - 120Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('50','480i - 120Hz ');
-      cpHdmiMode.ComboboxAddLine('51','480i - 120Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('52','576p - 200Hz ');
-      cpHdmiMode.ComboboxAddLine('53','576p - 200Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('54','576i - 200Hz ');
-      cpHdmiMode.ComboboxAddLine('55','576i - 200Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('56','480p - 240Hz ');
-      cpHdmiMode.ComboboxAddLine('57','480p - 240Hz 16:9 aspect ratio');
-      cpHdmiMode.ComboboxAddLine('58','480i - 240Hz ');
-      cpHdmiMode.ComboboxAddLine('59','480i - 240Hz 16:9 aspect ratio');
-
-
+      AddModes(cpHdmiMode,cpHdmiGroup.Value);
     end
   else if cpHdmiGroup.Value='2' then
     begin
       cpHdmiMode.Enabled:=true;
-      cpHdmiMode.ComboboxAddLine('','');
-      cpHdmiMode.ComboboxAddLine('1','640x350 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('2','640x400 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('3','720x400 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('4','640x480 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('5','640x480 - 72Hz ');
-      cpHdmiMode.ComboboxAddLine('6','640x480 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('7','640x480 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('8','800x600 - 56Hz ');
-      cpHdmiMode.ComboboxAddLine('9','800x600 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('10','800x600 - 72Hz ');
-      cpHdmiMode.ComboboxAddLine('11','800x600 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('12','800x600 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('13','800x600 - 120Hz ');
-      cpHdmiMode.ComboboxAddLine('14','848x480 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('15','1024x768 - 43Hz incompatible with the Raspberry Pi');
-      cpHdmiMode.ComboboxAddLine('16','1024x768 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('17','1024x768 - 70Hz ');
-      cpHdmiMode.ComboboxAddLine('18','1024x768 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('19','1024x768 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('20','1024x768 - 120Hz ');
-      cpHdmiMode.ComboboxAddLine('21','1152x864 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('22','1280x768 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('23','1280x768 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('24','1280x768 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('25','1280x768 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('26','1280x768 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('27','1280x800 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('28','1280x800 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('29','1280x800 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('30','1280x800 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('31','1280x800 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('32','1280x960 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('33','1280x960 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('34','1280x960 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('35','1280x1024 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('36','1280x1024 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('37','1280x1024 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('38','1280x1024 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('39','1360x768 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('40','1360x768 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('41','1400x1050 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('42','1400x1050 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('43','1400x1050 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('44','1400x1050 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('45','1400x1050 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('46','1440x900 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('47','1440x900 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('48','1440x900 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('49','1440x900 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('50','1440x900 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('51','1600x1200 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('52','1600x1200 - 65Hz ');
-      cpHdmiMode.ComboboxAddLine('53','1600x1200 - 70Hz ');
-      cpHdmiMode.ComboboxAddLine('54','1600x1200 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('55','1600x1200 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('56','1600x1200 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('57','1680x1050 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('58','1680x1050 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('59','1680x1050 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('60','1680x1050 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('61','1680x1050 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('62','1792x1344 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('63','1792x1344 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('64','1792x1344 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('65','1856x1392 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('66','1856x1392 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('67','1856x1392 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('68','1920x1200 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('69','1920x1200 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('70','1920x1200 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('71','1920x1200 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('72','1920x1200 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('73','1920x1440 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('74','1920x1440 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('75','1920x1440 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('76','2560x1600 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('77','2560x1600 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('78','2560x1600 - 75Hz ');
-      cpHdmiMode.ComboboxAddLine('79','2560x1600 - 85Hz ');
-      cpHdmiMode.ComboboxAddLine('80','2560x1600 - 120Hz reduced blanking');
-      cpHdmiMode.ComboboxAddLine('81','1366x768 - 60Hz ');
-      cpHdmiMode.ComboboxAddLine('82','1920x1080 - 60Hz 1080p');
-      cpHdmiMode.ComboboxAddLine('83','1600x900 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('84','2048x1152 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('85','1280x720 - 60Hz 720p');
-      cpHdmiMode.ComboboxAddLine('86','1366x768 -  reduced blanking');
-      cpHdmiMode.ComboboxAddLine('87','hdmi_timings');
+      AddModes(cpHdmiMode,cpHdmiGroup.Value);
     end
   else
     begin
@@ -910,10 +1077,69 @@ begin
     end;
 end;
 
-procedure TMainForm.cpHdmiModeValueChange(Sender: TObject);
+procedure TMainForm.FormActivate(Sender: TObject);
+var Ini : TInifile;
 begin
-  if cpHdmiMode.Value='87' then MemoHdmiTimings.Enabled:=true
-  else MemoHdmiTimings.Enabled:=false;
+  if FirstStart=true then
+    begin
+      FirstStart:=False;
+
+      Trans.Filename:=ExtractFilePath(Paramstr(0))+FILE_LANGUAGE;
+      SetupForm.Filename:=ExtractFilePath(Paramstr(0))+FILE_CONFIG;
+
+      Trans.ReadLanguages;
+      //Trans.SetDefaultLanguage;
+      SetupForm.LoadConfig;
+
+
+
+      UpdateLanguage;
+
+      try
+        Ini:=TInifile.Create(SetupForm.Filename);
+        RestoreWindowPosition(MainForm,Ini);
+        RestoreWindowPosition(SetupForm,Ini);
+
+      finally
+        Ini.Free;
+      end;
+
+
+      {
+      //Doesn't working:
+      SynAnySyn1.Keywords.Clear;
+      for i:=0 to ComponentCount-1 do
+        begin
+          if Components[i] is TConfigPanel then
+            begin
+              cp:=TConfigPanel(Components[i]);
+              SynAnySyn1.Keywords.Add(cp.Prop);
+            end;
+        end;
+
+
+      Memo1.Lines.Assign(SynAnySyn1.Keywords);  }
+
+
+      NewConfigTxt;
+
+      if ParamCount>0 then
+        if FileExists(ParamStr(1)) then LoadConfigTxt(ParamStr(1));
+
+    end;
+end;
+
+procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+var Ini : TInifile;
+begin
+  try
+    Ini:=TInifile.Create(SetupForm.Filename);
+    WriteWindowPosition(MainForm,Ini);
+    WriteWindowPosition(SetupForm,Ini);
+
+  finally
+    Ini.Free;
+  end;
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -956,30 +1182,46 @@ var
   TreeNode,SubNode,SubNode2 : TTreeNode;
   cp : TConfigPanel;
 begin
+  if Trans.Language='DE' then Speedbutton10.Down:=true
+  else Speedbutton11.Down:=true;
+
   Trans.ReadTranslations;
   Synedit1.ChangeStamp;
 
   //Menue
-  MenuItem1.Caption:=Trans.Text('Datei');
+  MenuItem16.Caption:=Trans.Text('Datei');
   ActionNewConfig.Caption:=Trans.Text('NeueDatei');
   ActionOpenConfig.Caption:=Trans.Text('DateiOeffnen');
   ActionOpenBootConfig.Caption:=Trans.Text('BootConfigOeffnen');
   ActionSaveConfig.Caption:=Trans.Text('DateiSpeichern');
   ActionSaveConfigAs.Caption:=Trans.Text('DateiSpeichernUnter');
+  ActionSaveSSH.Caption:=Trans.Text('DateiSpeichernSSH');
+  ActionSaveWIFI.Caption:=Trans.Text('DateiSpeichernWIFI');
   ActionClose.Caption:=Trans.Text('Beenden');
 
-  MenuItem4.Caption:=Trans.Text('Hilfe');
+
+  ActionNewConfig2.Caption:=Trans.Text('Neu');
+  ActionOpenConfig2.Caption:=Trans.Text('Öffnen');
+  ActionSaveConfig2.Caption:=Trans.Text('Speichern');
+  ActionHelp2.Caption:=Trans.Text('Hilfe');
+  ActionRaspberryWeb2.Caption:=Trans.Text('Raspberrypi.org');
+
+  ActionSetupPage.Caption:=Trans.Text('Einstellungen');
+
+  MenuItem17.Caption:=Trans.Text('Hilfe');
+  MenuItem1.Caption:=Trans.Text('Tools');
   ActionHelp.Caption:=Trans.Text('Hilfe');
   ActionAbout.Caption:=Trans.Text('Info');
-  ActionRasperryWeb.Caption:=Trans.Text('Raspberrypi.org');
+  ActionRaspberryWeb.Caption:=Trans.Text('Raspberrypi.org');
   ActionTechPlusCode.Caption:=Trans.Text('Techpluscode.de');
 
-  MenuItem13.Caption:=Trans.Text('Sprache');
 
   OpenDialog1.Title:=Trans.Text('DateiOeffnen');
   OpenDialog1.Filter:=Trans.Text('OpenDialogFilter');
   SaveDialog1.Title:=Trans.Text('DateiSpeichernUnter');
   SaveDialog1.Filter:=Trans.Text('OpenDialogFilter');
+  SelectDirectoryDialog1.Title:=Trans.Text('DateiSpeichernSSH');
+
 
   //Treeview
   TreeviewChange:=false;
@@ -999,9 +1241,12 @@ begin
   SubNode:=TreeView1.Items.AddChild(TreeNode,Trans.Text('Video'));
   TreeView1.Items.AddChild(SubNode,Trans.Text('SDTV'));
   SubNode2:=TreeView1.Items.AddChild(SubNode,Trans.Text('HDMI'));
-  TreeView1.Items.AddChild(SubNode2,Trans.Text('HDMI Weitere'));
-  TreeView1.Items.AddChild(SubNode2,Trans.Text('HDMI Timings'));
   TreeView1.Items.AddChild(SubNode2,Trans.Text('HDMI Display'));
+  TreeView1.Items.AddChild(SubNode2,Trans.Text('HDMI Timings'));
+  TreeView1.Items.AddChild(SubNode2,Trans.Text('HDMI EDID'));
+  TreeView1.Items.AddChild(SubNode2,Trans.Text('HDMI Custom'));
+  SubNode2:=TreeView1.Items.AddChild(SubNode,Trans.Text('LCD'));
+  TreeView1.Items.AddChild(SubNode2,Trans.Text('LCD2'));
   TreeView1.Items.AddChild(TreeNode,Trans.Text('Codecs'));
   SubNode:=TreeView1.Items.AddChild(TreeNode,Trans.Text('Overclocking'));
   TreeView1.Items.AddChild(SubNode,Trans.Text('Overvoltage'));
@@ -1056,15 +1301,14 @@ begin
   Label2.Caption:=Trans.Text('Datei');
   Label4.Caption:=Trans.Text('Einstellungen');
   Label3.Caption:=Trans.Text('Hilfe und Info');
-  Label1.Caption:=Trans.Text('HDMI_TimingInfo');
+  Label5.Caption:=Trans.Text('Menue');
+  Label6.Caption:=Trans.Text('Tools');
+  Label8.Caption:=Trans.Text('Msg-Pi Display');
 
 
   //Buttons
-  SpeedButton1.Caption:=Trans.Text('Neu');
-  SpeedButton2.Caption:=Trans.Text('Öffnen');
-  SpeedButton3.Caption:=Trans.Text('Speichern');
-  SpeedButton4.Caption:=Trans.Text('Hilfe');
-  SpeedButton5.Caption:=Trans.Text('Raspberrypi.org');
+  SpeedButton16.Caption:=Trans.Text('SSH');
+  SpeedButton17.Caption:=Trans.Text('Wifi');
 
 end;
 
@@ -1073,6 +1317,7 @@ var
   i : integer;
   cp : TConfigPanel;
 begin
+  FirstStart:=true;
   PageControl1.ShowTabs:=false;
 
 
@@ -1082,40 +1327,34 @@ begin
   Treeview1.Selected:=Treeview1.Items[2];
   UpdatePageControl(Treeview1.Selected.Text);
 
+end;
 
-  Trans.Filename:=ExtractFilePath(Paramstr(0))+FILE_LANGUAGE;
-  Trans.ReadLanguages;
-  Trans.SetDefaultLanguage;
-  if Trans.Language='DE' then Speedbutton10.Down:=true
-  else Speedbutton11.Down:=true;
+procedure TMainForm.SpeedButton14Click(Sender: TObject);
+begin
+  ActionSetupPageExecute(Sender);
+end;
 
-  UpdateLanguage;
+procedure TMainForm.SpeedButton15Click(Sender: TObject);
+var P : TPoint;
+begin
+  //Funktioniert nicht mit SpeedButton15
+  //P:=ClientToScreen(Point(SpeedButton15.Left+5,SpeedButton15.Top+SpeedButton15.Height));
+  P:=ClientToScreen(Point(Panel39.Left-5,SpeedButton15.Top+SpeedButton15.Height));
+  PopupMenuHelp.Popup(P.X, P.Y);
+end;
 
-  ConfigSetup.NoLineForDefaultValue:=true;
-  ConfigSetup.CreateNewConfigOnSave:=false;
-  ConfigSetup.AddCommentsOnSave:=true;
+procedure TMainForm.SpeedButton8Click(Sender: TObject);
+var P : TPoint;
+begin
+  P:=ClientToScreen(Point(Panel34.Left,Panel34.Top+Panel34.Height));
+  PopupMenuTotal.Popup(P.X, P.Y);
+end;
 
-
-  {
-  //Doesn't working:
-  SynAnySyn1.Keywords.Clear;
-  for i:=0 to ComponentCount-1 do
-    begin
-      if Components[i] is TConfigPanel then
-        begin
-          cp:=TConfigPanel(Components[i]);
-          SynAnySyn1.Keywords.Add(cp.Prop);
-        end;
-    end;
-
-
-  Memo1.Lines.Assign(SynAnySyn1.Keywords);  }
-
-
-  NewConfigTxt;
-
-  if ParamCount>0 then
-    if FileExists(ParamStr(1)) then LoadConfigTxt(ParamStr(1));
+procedure TMainForm.SpeedButton9Click(Sender: TObject);
+var P : TPoint;
+begin
+  P:=ClientToScreen(Point(SpeedButton9.Left,SpeedButton9.Top+SpeedButton9.Height));
+  PopupMenuFile.Popup(P.X, P.Y);
 end;
 
 procedure TMainForm.TreeView1Change(Sender: TObject; Node: TTreeNode);

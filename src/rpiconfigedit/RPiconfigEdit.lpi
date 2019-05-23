@@ -17,7 +17,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <MinorVersionNr Value="85"/>
+      <MajorVersionNr Value="1"/>
       <Language Value="0407"/>
       <Attributes pvaPreRelease="True"/>
       <StringTable Comments="Editor für Raspberry Pi config.txt" CompanyName="techpluscode.de" FileDescription="Editor für Raspberry Pi config.txt" InternalName="rpiconfigedit" LegalCopyright="techpluscode.de" OriginalFilename="rpiconfigedit.exe" ProductName="RPiConfigEdit"/>
@@ -45,7 +45,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="7">
       <Unit0>
         <Filename Value="RPiconfigEdit.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -72,6 +72,20 @@
         <Filename Value="language.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="setup.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SetupForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="wifisetup.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="WifiSetupForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -89,7 +103,6 @@
         <GenerateDebugInfo Value="False"/>
         <StripSymbols Value="True"/>
       </Debugging>
-      <LinkSmart Value="True"/>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

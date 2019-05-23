@@ -35,8 +35,8 @@ object AboutForm: TAboutForm
     Left = 20
     Height = 20
     Top = 120
-    Width = 262
-    Caption = '(C)opyright 2019 von Thomas Angielsky'
+    Width = 234
+    Caption = '(C)opyright 2019 Thomas Angielsky'
     ParentColor = False
   end
   object Label3: TLabel

@@ -75,8 +75,7 @@ end;
 
 procedure TAboutForm.Label3Click(Sender: TObject);
 begin
-  if Trans.Language='EN' then OpenUrl(URL_TECHPLUSCODE+'-en')
-  else OpenUrl(URL_TECHPLUSCODE);
+  OpenUrl(URL_TECHPLUSCODE+Trans.Text('Link-Homepage'));
 end;
 
 end.
