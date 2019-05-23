@@ -36,6 +36,7 @@ type
 
     CreateNewConfigOnSave : boolean;
     AddCommentsOnSave : boolean;
+    CreateBackupfiles : boolean;
   end;
 
 
@@ -155,7 +156,13 @@ begin
 
   if ((FDefaultValue=FValue) and (ConfigSetup.NoLineForDefaultValue=true))
     then result:='';
+
   if (self.Enabled=false) then result:='';
+  if (FStyle=cpsEdit) and (FValue='') then result:='';
+
+  if (result<>'') and (ConfigSetup.AddCommentsOnSave=true)
+    and (LabelComment.Caption<>'') and (ConfigSetup.CreateNewConfigOnSave=false) then
+    result:=result+' #'+LabelComment.Caption;
 end;
 
 function TConfigPanel.ReadConfig(s: string) : boolean;
